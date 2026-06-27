@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>JustWrite — a calm markdown writing app for macOS</title>
+<meta name="description" content="JustWrite is a calm markdown workspace for macOS: write and preview side by side, with live rendering, an outline, diagrams, themes, and export." />
+<meta property="og:title" content="JustWrite — a calm markdown writing app" />
+<meta property="og:description" content="Write and preview side by side. Live rendering, outline, Mermaid diagrams, themes, and export. For macOS." />
+<meta property="og:image" content="assets/screenshot-light.png" />
+<style>
+  :root {
+    --paper: #faf8f4;
+    --elevated: #ffffff;
+    --soft: #f0ece4;
+    --border: #e6e0d5;
+    --ink: #211e1a;
+    --muted: #6e665a;
+    --faint: #a89f8f;
+    --accent: #3554d1;
+    --accent-strong: #2c48c2;
+    --shadow: 0 24px 70px rgba(60, 50, 30, 0.16);
+    --shadow-sm: 0 6px 22px rgba(60, 50, 30, 0.1);
+    --serif: ui-serif, 'New York', 'Iowan Old Style', Charter, Palatino, Georgia, serif;
+    --sans: ui-sans-serif, system-ui, -apple-system, 'SF Pro Text', 'Segoe UI', sans-serif;
+    --mono: ui-monospace, 'SF Mono', 'JetBrains Mono', Menlo, monospace;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font-family: var(--sans);
+    color: var(--ink);
+    background: var(--paper);
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.6;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  .wrap { max-width: 1060px; margin: 0 auto; padding: 0 24px; }
+
+  /* Header */
+  header.site {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 22px 0;
+  }
+  .brand { display: flex; align-items: center; gap: 11px; }
+  .logo {
+    width: 34px; height: 34px; border-radius: 9px; display: grid; place-items: center;
+    background: var(--accent); color: #fff; font-family: var(--serif);
+    font-style: italic; font-weight: 600; font-size: 1.25rem;
+  }
+  .brand b { font-weight: 600; font-size: 1.05rem; letter-spacing: -0.01em; }
+  .nav a { color: var(--muted); font-size: 0.9rem; font-weight: 550; margin-left: 22px; }
+  .nav a:hover { color: var(--ink); }
+
+  /* Hero */
+  .hero { text-align: center; padding: 64px 0 30px; }
+  .eyebrow {
+    display: inline-block; font-size: 0.74rem; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--faint); font-weight: 650; margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-family: var(--serif); font-weight: 600; letter-spacing: -0.025em;
+    font-size: clamp(2.6rem, 6vw, 4.2rem); line-height: 1.05; margin: 0 0 18px;
+  }
+  .hero h1 .accent { color: var(--accent); font-style: italic; }
+  .hero p.lead {
+    max-width: 600px; margin: 0 auto 30px; font-size: 1.18rem; color: var(--muted);
+  }
+  .cta { display: inline-flex; flex-direction: column; align-items: center; gap: 10px; }
+  .download {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: var(--accent-strong); color: #fff; font-weight: 600; font-size: 1.02rem;
+    padding: 14px 26px; border-radius: 12px; box-shadow: var(--shadow-sm);
+    transition: transform 0.12s ease, filter 0.15s ease;
+  }
+  .download:hover { filter: brightness(1.07); transform: translateY(-1px); }
+  .download svg { width: 18px; height: 18px; }
+  .cta small { color: var(--faint); font-size: 0.85rem; }
+
+  /* Screenshot */
+  .shot { padding: 30px 0 70px; }
+  .frame {
+    border-radius: 16px; overflow: hidden; border: 1px solid var(--border);
+    box-shadow: var(--shadow); background: var(--elevated);
+  }
+  .frame img { display: block; width: 100%; }
+
+  /* Features */
+  .section-title {
+    font-family: var(--serif); font-weight: 600; font-size: 1.9rem; letter-spacing: -0.02em;
+    text-align: center; margin: 0 0 8px;
+  }
+  .section-sub { text-align: center; color: var(--muted); margin: 0 0 40px; }
+  .features {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; padding-bottom: 70px;
+  }
+  .card {
+    background: var(--elevated); border: 1px solid var(--border); border-radius: 14px;
+    padding: 24px;
+  }
+  .card .ic {
+    width: 38px; height: 38px; border-radius: 10px; display: grid; place-items: center;
+    background: var(--soft); color: var(--accent); font-size: 1.2rem; margin-bottom: 14px;
+  }
+  .card h3 { font-family: var(--serif); font-weight: 600; font-size: 1.16rem; margin: 0 0 6px; }
+  .card p { margin: 0; color: var(--muted); font-size: 0.95rem; }
+
+  /* Dark showcase strip */
+  .strip { padding: 0 0 70px; }
+  .strip .frame { box-shadow: var(--shadow); }
+  .strip-head { text-align: center; margin: 0 0 26px; }
+
+  /* Final CTA */
+  .final {
+    text-align: center; background: var(--elevated); border: 1px solid var(--border);
+    border-radius: 18px; padding: 54px 24px; margin-bottom: 60px; box-shadow: var(--shadow-sm);
+  }
+  .final h2 { font-family: var(--serif); font-weight: 600; font-size: 2rem; margin: 0 0 10px; letter-spacing: -0.02em; }
+  .final p { color: var(--muted); margin: 0 0 24px; }
+
+  footer.site {
+    border-top: 1px solid var(--border); padding: 28px 0 50px; color: var(--faint);
+    font-size: 0.88rem; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px;
+  }
+  footer.site a { color: var(--muted); }
+
+  @media (max-width: 760px) {
+    .features { grid-template-columns: 1fr; }
+    .nav { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="site">
+    <div class="brand">
+      <span class="logo">J</span>
+      <b>JustWrite</b>
+    </div>
+    <nav class="nav">
+      <a href="#features">Features</a>
+      <a href="https://github.com/rukywe/JustWrite-releases/releases">Releases</a>
+      <a href="#download">Download</a>
+    </nav>
+  </header>
+
+  <section class="hero" id="download">
+    <span class="eyebrow">Markdown, calmly</span>
+    <h1>A calm place to <span class="accent">just write.</span></h1>
+    <p class="lead">
+      Write and preview markdown side by side — live rendering, a serif reading column,
+      an outline, diagrams, and export. No clutter, just your words.
+    </p>
+    <div class="cta">
+      <a class="download" href="https://github.com/rukywe/JustWrite-releases/releases/latest/download/JustWrite.dmg">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14"/></svg>
+        Download for macOS
+      </a>
+      <small>Universal · Apple Silicon &amp; Intel · Free · v1.0.0</small>
+    </div>
+  </section>
+
+  <section class="shot">
+    <div class="frame">
+      <img src="assets/screenshot-light.png" alt="JustWrite editing markdown with a live preview" />
+    </div>
+  </section>
+
+  <section id="features">
+    <h2 class="section-title">Everything you need, nothing you don't</h2>
+    <p class="section-sub">Built for focused writing on macOS.</p>
+    <div class="features">
+      <div class="card">
+        <div class="ic">◧</div>
+        <h3>Live split preview</h3>
+        <p>Type on the left, watch it render on the right — in a serif reading column that looks like a printed page. Resizable.</p>
+      </div>
+      <div class="card">
+        <div class="ic">☾</div>
+        <h3>Ink-on-paper themes</h3>
+        <p>A warm light mode and a cozy dark mode. Easy on the eyes, day or night.</p>
+      </div>
+      <div class="card">
+        <div class="ic">☰</div>
+        <h3>Outline &amp; search</h3>
+        <p>Jump around with an auto-generated outline, and find anything in your document instantly.</p>
+      </div>
+      <div class="card">
+        <div class="ic">❖</div>
+        <h3>Diagrams &amp; code</h3>
+        <p>Mermaid diagrams and syntax-highlighted code blocks render right inside your notes.</p>
+      </div>
+      <div class="card">
+        <div class="ic">⧉</div>
+        <h3>Smart paste</h3>
+        <p>Paste a link onto selected text to make it a link; paste an image and it's saved beside your file.</p>
+      </div>
+      <div class="card">
+        <div class="ic">⬓</div>
+        <h3>Export anywhere</h3>
+        <p>Send your writing to PDF or HTML, or copy it as rich text — formatting intact.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="strip">
+    <div class="strip-head">
+      <h2 class="section-title">Light or dark, your call</h2>
+      <p class="section-sub">Toggle with a keystroke; it remembers your choice.</p>
+    </div>
+    <div class="frame">
+      <img src="assets/screenshot-dark.png" alt="JustWrite in dark mode" />
+    </div>
+  </section>
+
+  <section class="final">
+    <h2>Start writing</h2>
+    <p>Free for macOS. Signed and notarized by Apple — opens with no warnings.</p>
+    <a class="download" href="https://github.com/rukywe/JustWrite-releases/releases/latest/download/JustWrite.dmg">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14"/></svg>
+      Download JustWrite
+    </a>
+  </section>
+
+  <footer class="site">
+    <span>JustWrite — a calm markdown writing app.</span>
+    <span>Made by Kelvin Anigboro · <a href="https://github.com/rukywe/JustWrite-releases/releases">All releases</a></span>
+  </footer>
+
+</div>
+</body>
+</html>
