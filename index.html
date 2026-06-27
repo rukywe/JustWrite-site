@@ -164,7 +164,7 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14"/></svg>
         Download for macOS
       </a>
-      <small>Universal · Apple Silicon &amp; Intel · Free · v1.0.0</small>
+      <small>Universal · Apple Silicon &amp; Intel · Free · <span class="version">latest</span></small>
     </div>
   </section>
 
@@ -237,5 +237,19 @@
   </footer>
 
 </div>
+<script>
+  // Always show the current version — fetched live from the releases repo, so
+  // the site never goes stale and you never touch this repo on a release.
+  fetch('https://api.github.com/repos/rukywe/JustWrite-releases/releases/latest')
+    .then(function (r) { return r.ok ? r.json() : null; })
+    .then(function (d) {
+      if (d && d.tag_name) {
+        document.querySelectorAll('.version').forEach(function (el) {
+          el.textContent = d.tag_name;
+        });
+      }
+    })
+    .catch(function () { /* keep the "latest" fallback */ });
+</script>
 </body>
 </html>
