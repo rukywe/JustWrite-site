@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://justwrite.akelvin.dev/sitemap.xml
